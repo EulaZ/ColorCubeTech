@@ -1,0 +1,30 @@
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\bin\Debug\ColorCube.exe.config
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\bin\Debug\ColorCube.exe
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\bin\Debug\ColorCube.pdb
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Form1.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Properties.Resources.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.csproj.GenerateResource.cache
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.exe
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.pdb
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.csprojAssemblyReference.cache
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Registerpage.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Option.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.csproj.CoreCompileInputs.cache
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Usagepage.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Enrollment.resources
+D:\Visual Studio 2019\Assignment\UIdesign04\ColorCube\ColorCube\obj\Debug\ColorCube.Guidance.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\bin\Debug\ColorCube.exe.config
+C:\Users\24819\Desktop\ColorCube\ColorCube\bin\Debug\ColorCube.exe
+C:\Users\24819\Desktop\ColorCube\ColorCube\bin\Debug\ColorCube.pdb
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.csprojAssemblyReference.cache
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Enrollment.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Form1.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Guidance.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Option.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Registerpage.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Properties.Resources.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.Usagepage.resources
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.csproj.GenerateResource.cache
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.csproj.CoreCompileInputs.cache
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.exe
+C:\Users\24819\Desktop\ColorCube\ColorCube\obj\Debug\ColorCube.pdb
