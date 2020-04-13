@@ -69,7 +69,7 @@ namespace ColorCube
             serialport1.Parity = Parity.None;
 
             serialport1.DataReceived += new SerialDataReceivedEventHandler(sp1DataReceived);
-            tmLED.Enabled = false;
+            serialport1.ReadTimeout = -1;
 
             //设置按钮不可用
             btnForward.Enabled = false;
@@ -93,6 +93,11 @@ namespace ColorCube
                 labScore.Text = "Scores Obtained :";
                 labDistance.Text = "Distance :";
                 labUnit.Text = "Sec";
+
+                btnForward.Text = "Forward";
+                btnLeft.Text = "Left";
+                btnRight.Text = "Right";
+                btnBack.Text = "Back";
             }
             else if (PublicValues.choice == 0)
             {
@@ -106,6 +111,11 @@ namespace ColorCube
                 labScore.Text = "已经获得的分数：";
                 labDistance.Text = "当前距离：";
                 labUnit.Text = "秒";
+
+                btnForward.Text = "向前";
+                btnLeft.Text = "向左";
+                btnRight.Text = "向右";
+                btnBack.Text = "向后";
             }
 
             labNumber.Text = scores.ToString();
@@ -328,7 +338,7 @@ namespace ColorCube
                     color = rcvdata.Substring(0, 1); ;
 
                     DistanceBox.Text = distance;
-                    labRcvM.Text = color + distance;
+                    labRcvM.Text = rcvdata;
                 }
                 catch(System.Exception ex)
                 {
@@ -357,7 +367,6 @@ namespace ColorCube
             btnBack.Enabled = false;
             btnLeft.Enabled = false;
             btnRight.Enabled = false;
-            tmLED.Enabled = false;
             btnStart.Enabled = true;
             btnEnd.Enabled = false;
 

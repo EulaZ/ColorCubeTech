@@ -48,7 +48,6 @@ namespace ColorCube
             this.btnForward = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
             this.pictureLED = new System.Windows.Forms.PictureBox();
-            this.tmLED = new System.Windows.Forms.Timer(this.components);
             this.ImlistLED = new System.Windows.Forms.ImageList(this.components);
             this.labDistance = new System.Windows.Forms.Label();
             this.DistanceBox = new System.Windows.Forms.TextBox();
@@ -404,7 +403,6 @@ namespace ColorCube
         private System.Windows.Forms.Button btnForward;
         private System.Windows.Forms.Button btnBack;
         private System.Windows.Forms.PictureBox pictureLED;
-        private System.Windows.Forms.Timer tmLED;
         private System.Windows.Forms.ImageList ImlistLED;
         private System.Windows.Forms.Label labDistance;
         private System.Windows.Forms.TextBox DistanceBox;
