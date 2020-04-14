@@ -50,6 +50,8 @@ namespace ColorCube
         public int turn;
         public int scores = 0;
         public int scores_last = 0;
+        
+        public byte[] level;
 
         public Usagepage()
         {
@@ -158,12 +160,15 @@ namespace ColorCube
             {
                 case 0:
                     tm_interval = 20;
+                    level[0] = 0x01;
                     break;
                 case 1:
                     tm_interval = 15;
+                    level[0] = 0x02;
                     break;
                 case 2:
                     tm_interval = 10;
+                    level[0] = 0x03;
                     break;
                 default:
                     {
@@ -242,8 +247,9 @@ namespace ColorCube
                         serialport1.Open();     //打开串口
                         _ = MessageBox.Show("Serail port " + serialport1.PortName + " is open");
 
-                        //serialport1.Write(level, 0, level.Length);
-                        //_ = MessageBox.Show("[ " + level + " ]" + "is sent", "Tips");
+                        //Choose the level
+                        serialport1.Write(level, 0, 1);
+                        _ = MessageBox.Show("[ " + level + " ]" + "is sent", "Tips");
 
                         Levelchoice.Enabled = false;
                         btnForward.Enabled = true;
@@ -276,47 +282,6 @@ namespace ColorCube
                     }
                 }
             }
-        }
-
-        private void DataSend(string levelmessage)
-        {
-            string sendBuf = levelmessage;
-            string sendnoNull = sendBuf.Trim();
-            string sendNOComma1 = sendnoNull.Replace(',', ' ');
-            string sendNOComma2 = sendNOComma1.Replace('，', ' ');
-            string strSendNOComma = sendNOComma2.Replace("0x", "");
-            strSendNOComma.Replace("0X", "");
-            string[] strArray = strSendNOComma.Split(' ');
-
-            byte[] byteBuffer = new byte[strArray.Length];
-            int ii = 0;
-            for (int i = 0; i < strArray.Length; i++)
-            {
-                Byte[] bytesOfStr = Encoding.Default.GetBytes(strArray[i]);
-
-                int decNum = 0;
-                if (strArray[i] == "")
-                {
-                    continue;
-                }
-                else
-                {
-                    decNum = Convert.ToInt32(strArray[i], 16);
-                }
-
-                try
-                {
-                    byteBuffer[ii] = Convert.ToByte(decNum);
-                }
-                catch
-                {
-                    _ = MessageBox.Show("字节越界，请逐个字节输入", "Error");
-                    return;
-                }
-
-                ii++;
-            }
-            serialport1.Write(byteBuffer, 0, byteBuffer.Length);
         }
 
         /// <summary>
