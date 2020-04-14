@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using static ColorCube.Option;
+using static ColorCube.Enrollment;
 
 /// <summary>
 /// //set the serial port name first
@@ -21,7 +22,7 @@ using static ColorCube.Option;
     ///         0x01：简单模式 20s
     ///         0x02：中等模式 15s
     ///         0x03：困难模式 10s
-    /// 游戏开始：打开串口，不发送任何数据。
+    /// 游戏开始：打开串口，发送选定关卡模式。
     /// 遥感操纵：
     ///         0x10 向前
     ///         0x20 向后
@@ -50,8 +51,8 @@ namespace ColorCube
         public int turn;
         public int scores = 0;
         public int scores_last = 0;
-        
-        public byte[] level;
+
+        public byte[] level = new byte[1];
 
         public Usagepage()
         {
@@ -159,16 +160,16 @@ namespace ColorCube
             switch (Levelchoice.SelectedIndex)
             {
                 case 0:
-                    tm_interval = 20;
                     level[0] = 0x01;
+                    tm_interval = 20;
                     break;
                 case 1:
+                    level[0] = Convert.ToByte(0x01);
                     tm_interval = 15;
-                    level[0] = 0x02;
                     break;
                 case 2:
+                    level[0] = Convert.ToByte(0x01);
                     tm_interval = 10;
-                    level[0] = 0x03;
                     break;
                 default:
                     {
@@ -245,17 +246,17 @@ namespace ColorCube
                     {
                         //set the port
                         serialport1.Open();     //打开串口
-                        _ = MessageBox.Show("Serail port " + serialport1.PortName + " is open");
-                        
+                        _ = MessageBox.Show("Serail port " + serialport1.PortName + " is open", "Tips");
+
                         //make sure to open the serial port
                         while(!serialport1.IsOpen)
                         {
                             Thread.Sleep(100);
                         }
-                        
+
                         //Choose the level
-                        serialport1.Write(level, 0, 1);
-                        _ = MessageBox.Show("[ " + level + " ]" + "is sent", "Tips");
+                        serialport1.Write(level, 0, level.Length);
+                        _ = MessageBox.Show("[ " + Convert.ToString(level[0]) + " ]" + "is sent", "Tips");
 
                         Levelchoice.Enabled = false;
                         btnForward.Enabled = true;
@@ -290,6 +291,47 @@ namespace ColorCube
             }
         }
 
+        private void DataSend(string levelmessage)
+        {
+            string sendBuf = levelmessage;
+            string sendnoNull = sendBuf.Trim();
+            string sendNOComma1 = sendnoNull.Replace(',', ' ');
+            string sendNOComma2 = sendNOComma1.Replace('，', ' ');
+            string strSendNOComma = sendNOComma2.Replace("0x", "");
+            strSendNOComma.Replace("0X", "");
+            string[] strArray = strSendNOComma.Split(' ');
+
+            byte[] byteBuffer = new byte[strArray.Length];
+            int ii = 0;
+            for (int i = 0; i < strArray.Length; i++)
+            {
+                Byte[] bytesOfStr = Encoding.Default.GetBytes(strArray[i]);
+
+                int decNum = 0;
+                if (strArray[i] == "")
+                {
+                    continue;
+                }
+                else
+                {
+                    decNum = Convert.ToInt32(strArray[i], 16);
+                }
+
+                try
+                {
+                    byteBuffer[ii] = Convert.ToByte(decNum);
+                }
+                catch
+                {
+                    _ = MessageBox.Show("字节越界，请逐个字节输入", "Error");
+                    return;
+                }
+
+                ii++;
+            }
+            serialport1.Write(byteBuffer, 0, byteBuffer.Length);
+        }
+
         /// <summary>
         /// 持续接收串口数据，判断颜色是否相同并积分。
         /// </summary>
@@ -309,7 +351,7 @@ namespace ColorCube
                     color = rcvdata.Substring(0, 1); ;
 
                     DistanceBox.Text = distance;
-                    labRcvM.Text = rcvdata;
+                    labRcvM.Text = color + " " + distance;
                 }
                 catch(System.Exception ex)
                 {
@@ -344,21 +386,26 @@ namespace ColorCube
             if (PublicValues.choice == 1)
             {
                 _ = MessageBox.Show("Game Over !\n" +
-                    "Your final scores: " + labNumber.Text,
+                    UserName.User + 
+                    " Your final scores: " + labNumber.Text,
                     "Congulations");
             }
             else
             {
                 _ = MessageBox.Show("游戏结束 !\n" +
-                    "你的最终得分是：" + labNumber.Text,
+                    UserName.User + 
+                    " 你的最终得分是：" + labNumber.Text,
                     "祝贺你");
             }
 
             //clear all the lable
             Levelchoice.SelectedItem = null;
             Levelchoice.Enabled = true;
+
             //LEDbox.Text = "";
             TimeBox.Text = "";
+            scores = 0;
+            scores_last = 0;
             labNumber.Text = "0";
             pictureLED.Image = null;
 
@@ -431,26 +478,35 @@ namespace ColorCube
                 {
                     case "r":
                         if (pictureLED.Image == ImlistLED.Images[0]) scores += 10;
-                        else scores -= 10;
+                        else if (pictureLED.Image != ImlistLED.Images[0]) scores -= 10;
+                        else
+                            _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "g":
                         if (pictureLED.Image == ImlistLED.Images[1]) scores += 10;
-                        else scores -= 10;
+                        else if (pictureLED.Image != ImlistLED.Images[1]) scores -= 10;
+                        else
+                            _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "b":
                         if (pictureLED.Image == ImlistLED.Images[2]) scores += 10;
-                        else scores -= 10;
+                        else if (pictureLED.Image != ImlistLED.Images[2]) scores -= 10;
+                        else
+                            _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "y":
                         if (pictureLED.Image == ImlistLED.Images[3]) scores += 10;
-                        else scores -= 10;
+                        else if (pictureLED.Image != ImlistLED.Images[3]) scores -= 10;
+                        else
+                            _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "p":
                         if (pictureLED.Image == ImlistLED.Images[4]) scores += 10;
-                        else scores -= 10;
+                        else if (pictureLED.Image != ImlistLED.Images[4]) scores -= 10;
+                        else
+                            _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     default:
-
                         if(PublicValues.choice == 1)
                         {
                             _ = MessageBox.Show("Unavailable Input ! No color cube is chosen !",
@@ -460,8 +516,7 @@ namespace ColorCube
                         {
                             _ = MessageBox.Show("无效 ！没有被选中的方块 ！",
                                     "错误");
-                        }
-                        
+                        }  
                         break;
                 }
             }
