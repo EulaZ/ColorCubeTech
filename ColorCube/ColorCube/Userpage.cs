@@ -246,7 +246,13 @@ namespace ColorCube
                         //set the port
                         serialport1.Open();     //打开串口
                         _ = MessageBox.Show("Serail port " + serialport1.PortName + " is open");
-
+                        
+                        //make sure to open the serial port
+                        while(!serialport1.IsOpen)
+                        {
+                            Thread.Sleep(100);
+                        }
+                        
                         //Choose the level
                         serialport1.Write(level, 0, 1);
                         _ = MessageBox.Show("[ " + level + " ]" + "is sent", "Tips");
