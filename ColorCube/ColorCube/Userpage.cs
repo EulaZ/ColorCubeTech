@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,24 +11,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using System.Speech.Synthesis;
 using static ColorCube.Option;
 using static ColorCube.Enrollment;
+using System.Globalization;
+using SpeechLib;
 
 /// <summary>
 /// //set the serial port name first
 /// 协议：
-    /// 输出：（默认16进制发送）
-    /// 关卡模式选择：
-    ///         0x01：简单模式 20s
-    ///         0x02：中等模式 15s
-    ///         0x03：困难模式 10s
-    /// 游戏开始：打开串口，发送选定关卡模式。
-    /// 遥感操纵：
-    ///         0x10 向前
-    ///         0x20 向后
-    ///         0x30 向左
-    ///         0x40 向右
-    /// 游戏结束：发送“0x00”之后关闭串口。
+/// 输出：（默认16进制发送）
+/// 关卡模式选择：
+///         0x01：简单模式 20s
+///         0x02：中等模式 15s
+///         0x03：困难模式 10s
+/// 游戏开始：打开串口，发送选定关卡模式。
+/// 遥感操纵：
+///         0x10 向前
+///         0x20 向后
+///         0x30 向左
+///         0x40 向右
+/// 游戏结束：发送“0x00”之后关闭串口。
 ///输入：（默认以字符串形式接收）
 ///每秒钟接受一次信号，以显示倒计时。
 ///输入字符串：【当前距离/当前颜色 +\n】
@@ -52,6 +55,7 @@ namespace ColorCube
         public int scores = 0;
         public int scores_last = 0;
 
+        public int[] order = new int[5];
         public byte[] level = new byte[1];
 
         public Usagepage()
@@ -101,6 +105,8 @@ namespace ColorCube
                 btnLeft.Text = "Left";
                 btnRight.Text = "Right";
                 btnBack.Text = "Back";
+
+                SpeakEnglish(UserName.User + "Welcome to ColorCube Gamebox");
             }
             else if (PublicValues.choice == 0)
             {
@@ -119,6 +125,8 @@ namespace ColorCube
                 btnLeft.Text = "向左";
                 btnRight.Text = "向右";
                 btnBack.Text = "向后";
+
+                SpeakChinese(UserName.User + "欢迎使用卡乐立方游戏机");
             }
 
             labNumber.Text = scores.ToString();
@@ -186,6 +194,34 @@ namespace ColorCube
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        private void SpeakEnglish(string str)
+        {
+            SpeechSynthesizer speech = new SpeechSynthesizer
+            {
+                Rate = 1, //设置语速
+                Volume = 100, //设置音量
+            };
+            speech.SelectVoice("Microsoft Zira Desktop");
+            speech.Speak(str);
+            speech.Dispose();
+        }
+        private void SpeakChinese(string str)
+        {
+            SpeechSynthesizer speech = new SpeechSynthesizer
+            {
+                Rate = 1, //设置语速
+                Volume = 100, //设置音量
+            };
+            speech.SelectVoice("Microsoft Huihui Desktop");
+            speech.Speak(str);
+            speech.Dispose();
+        }
+
+
+        /// <summary>
         /// Open the Guidance page
         /// </summary>
         /// <param name="sender"></param>
@@ -195,13 +231,14 @@ namespace ColorCube
         {
             if (PublicValues.choice == 1)
             {
+                SpeakEnglish("We have a simple guide for you to understand how to play with this machine robot.");
                 _ = MessageBox.Show("Welcome to ColorCube Game Box !\n" +
-                      "We have a simple guide for you to understand how to play with this machine as below."
+                      "We have a simple guide for you to understand how to play with this machine robot."
                       , "Help");
-
             }
             else
             {
+                SpeakChinese("我们准备了一份简单的教程，以便你能够更好地享受它。");
                 _ = MessageBox.Show("欢迎来到卡乐立方推箱子游戏 !\n" +
                       "我们为你准备了一份简单的教程，以便你能够更好地享受它。"
                       , "帮助");
@@ -229,10 +266,13 @@ namespace ColorCube
             {
                 if (PublicValues.choice == 1)
                 {
+                    SpeakEnglish("Please choose Current Difficulty Level first !");
                     _ = MessageBox.Show("Please choose Current Difficulty Level first !", "Error");
+                    return;
                 }
                 else
                 {
+                    SpeakChinese("请先选择关卡难度 !");
                     _ = MessageBox.Show("请先选择关卡难度 !", "错误");
                     return;
                 }
@@ -256,7 +296,6 @@ namespace ColorCube
 
                         //Choose the level
                         serialport1.Write(level, 0, level.Length);
-                        _ = MessageBox.Show("[ " + Convert.ToString(level[0]) + " ]" + "is sent", "Tips");
 
                         Levelchoice.Enabled = false;
                         btnForward.Enabled = true;
@@ -265,6 +304,17 @@ namespace ColorCube
                         btnRight.Enabled = true;
                         btnStart.Enabled = false;
                         btnEnd.Enabled = true;
+
+                        if (PublicValues.choice == 1)
+                        {
+                            SpeakEnglish("Game is going to start ! Please focus on the light color shinning at left bottom ! " +
+                                "Press the direction keys to control the movement of the white cube");
+                        }
+                        else
+                        {
+                            SpeakChinese("游戏即将开始 !请注意左下角闪烁的灯光颜色 ！" +
+                                "利用方向键控制白色方块的运动。");
+                        }
 
                         //开始倒计时和图片切换
                         scores_last = scores;
@@ -383,20 +433,20 @@ namespace ColorCube
             btnStart.Enabled = true;
             btnEnd.Enabled = false;
 
+            string tip;
             if (PublicValues.choice == 1)
             {
-                _ = MessageBox.Show("Game Over !\n" +
-                    UserName.User + 
-                    " Your final scores: " + labNumber.Text,
-                    "Congulations");
+                tip = "Game Over !\n" + UserName.User + " Your final scores is: " + labNumber.Text;
+                SpeakEnglish(tip);
+                _ = MessageBox.Show(tip, "Congulations");
             }
             else
             {
-                _ = MessageBox.Show("游戏结束 !\n" +
-                    UserName.User + 
-                    " 你的最终得分是：" + labNumber.Text,
-                    "祝贺你");
+                tip = "游戏结束 !\n " + UserName.User + " 您的最终得分是：" + labNumber.Text;
+                SpeakChinese(tip);
+                _ = MessageBox.Show(tip, "祝贺你");
             }
+
 
             //clear all the lable
             Levelchoice.SelectedItem = null;
@@ -471,38 +521,43 @@ namespace ColorCube
 
         private void btnPush_Click(object sender, EventArgs e)
         {
+            string tip1_e_r = "Bingo !";
+            string tip1_e_w = "Fail !";
+            string tip2_c_r = "正确 ！";
+            string tip2_c_w = "失败 ！";
+
             int.TryParse(distance, out int dis_int);
             if (dis_int < 100)  //within 1cm, determine the chosen color.
             {
                 switch (color)
                 {
                     case "r":
-                        if (pictureLED.Image == ImlistLED.Images[0]) scores += 10;
-                        else if (pictureLED.Image != ImlistLED.Images[0]) scores -= 10;
+                        if (order[turn] == 0) scores += 10;
+                        else if (order[turn] != 0) scores -= 10;
                         else
                             _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "g":
-                        if (pictureLED.Image == ImlistLED.Images[1]) scores += 10;
-                        else if (pictureLED.Image != ImlistLED.Images[1]) scores -= 10;
+                        if (order[turn] == 1) scores += 10;
+                        else if (order[turn] != 1) scores -= 10;
                         else
                             _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "b":
-                        if (pictureLED.Image == ImlistLED.Images[2]) scores += 10;
-                        else if (pictureLED.Image != ImlistLED.Images[2]) scores -= 10;
+                        if (order[turn] == 2) scores += 10;
+                        else if (order[turn] != 2) scores -= 10;
                         else
                             _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "y":
-                        if (pictureLED.Image == ImlistLED.Images[3]) scores += 10;
-                        else if (pictureLED.Image != ImlistLED.Images[3]) scores -= 10;
+                        if (order[turn] == 3) scores += 10;
+                        else if (order[turn] != 3) scores -= 10;
                         else
                             _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
                     case "p":
-                        if (pictureLED.Image == ImlistLED.Images[4]) scores += 10;
-                        else if (pictureLED.Image != ImlistLED.Images[4]) scores -= 10;
+                        if (order[turn] == 4) scores += 10;
+                        else if (order[turn] != 4) scores -= 10;
                         else
                             _ = MessageBox.Show("Unavailable Input !", "Error");
                         break;
@@ -522,6 +577,21 @@ namespace ColorCube
             }
 
             labNumber.Text = scores.ToString();  //Show the scores we obtained
+            int check = scores - scores_last;
+            if (check == 10)
+            {
+                if (PublicValues.choice == 1) SpeakEnglish(tip1_e_r);
+                else SpeakChinese(tip2_c_r);
+            }
+            else if (check == -10)
+            {
+                if (PublicValues.choice == 1) SpeakEnglish(tip1_e_w);
+                else SpeakChinese(tip2_c_w);
+            }
+            else
+            {
+                SpeakEnglish("Error !");
+            }
         }
 
         /// <summary>
@@ -562,10 +632,24 @@ namespace ColorCube
                             TimeBox.Text = time.ToString();
 
                             if (PublicValues.choice == 1)
+                            {
+                                SpeakEnglish("Time Out !");
                                 _ = MessageBox.Show("Time Out", "Failure");
+                            }
                             else
+                            {
+                                SpeakChinese("任务超时 !");
                                 _ = MessageBox.Show("任务超时 ！", "失败");
-                            Thread.Sleep(1000);
+                            }
+                                
+                            if (PublicValues.choice == 1)
+                            {
+                                SpeakEnglish("Next turn starts");
+                            }
+                            else
+                            {
+                                SpeakChinese("进入下一轮游戏");
+                            }
 
                             turn++;
                             time = tm_interval;
@@ -574,6 +658,16 @@ namespace ColorCube
                     else
                     {
                         scores_last = scores;
+
+                        if (PublicValues.choice == 1)
+                        {
+                            SpeakEnglish("Next turn starts");
+                        }
+                        else
+                        {
+                            SpeakChinese("进入下一轮游戏");
+                        }
+
                         time = tm_interval;
                         turn++;
                     }

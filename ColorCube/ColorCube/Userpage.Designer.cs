@@ -351,7 +351,7 @@ namespace ColorCube
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackgroundImage = global::ColorCube.Properties.Resources.Userpage3;
+            this.BackgroundImage = global::ColorCube.Properties.Resources.Userpage;
             this.ClientSize = new System.Drawing.Size(1157, 649);
             this.Controls.Add(this.btnPush);
             this.Controls.Add(this.labRcvM);

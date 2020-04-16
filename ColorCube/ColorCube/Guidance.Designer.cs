@@ -38,7 +38,7 @@
             this.GuideBox.Location = new System.Drawing.Point(90, 55);
             this.GuideBox.Name = "GuideBox";
             this.GuideBox.ReadOnly = true;
-            this.GuideBox.Size = new System.Drawing.Size(950, 116);
+            this.GuideBox.Size = new System.Drawing.Size(247, 503);
             this.GuideBox.TabIndex = 0;
             this.GuideBox.Text = "";
             // 

@@ -65,6 +65,7 @@
             this.Namebox.Name = "Namebox";
             this.Namebox.Size = new System.Drawing.Size(224, 34);
             this.Namebox.TabIndex = 2;
+            this.Namebox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Namebox_KeyPress);
             // 
             // Keybox
             // 

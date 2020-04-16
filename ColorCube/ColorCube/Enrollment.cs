@@ -15,6 +15,10 @@ namespace ColorCube
     public partial class Enrollment : Form
     {
         public int dir = -1; // direction to choose where is the next page
+        public class UserName
+        {
+            public static string User;
+        }
 
         public Enrollment()
         {
@@ -50,10 +54,6 @@ namespace ColorCube
             {
                 dir = 0;
             }
-            else if(Namebox.Text == "User")  //user enter
-            {
-                dir = 1;
-            }
             else if(Namebox.Text == "Register" && Keybox.Text != "B39VSGroup04")
             {
                 if(PublicValues.choice == 1)
@@ -66,7 +66,7 @@ namespace ColorCube
                     _ = MessageBox.Show("用户名或密码输入错误 ！", "错误");
                 }
             }
-            else
+            else if(Namebox.Text == "")
             {
                 if(PublicValues.choice == 1)
                 {
@@ -77,6 +77,11 @@ namespace ColorCube
                     _ = MessageBox.Show("无效的用户名 !", "错误");
                 }
                 
+            }
+            else  //user enter
+            {
+                UserName.User = Namebox.Text;
+                dir = 1;
             }
 
             if (dir == 0 || dir == 1)
@@ -106,6 +111,14 @@ namespace ColorCube
             }
         }
 
+        private void Namebox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                btnsignup.PerformClick();
+            }
+        }
+
         private void btnReturn_Click(object sender, EventArgs e)
         {
             Thread t7 = new Thread(starfrm7);
@@ -116,5 +129,6 @@ namespace ColorCube
         {
             Application.Run(new Form1());
         }
+
     }
 }

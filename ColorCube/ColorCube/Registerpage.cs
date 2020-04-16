@@ -50,7 +50,7 @@ namespace ColorCube
                 cbSerial.Items.Add(s);
             }
 
-            Control.CheckForIllegalCrossThreadCalls = false;    //这个类中我们不检查跨线程的调用是否合法(因为.net 2.0以后加强了安全机制,，不允许在winform中直接跨线程访问控件的属性)
+            Control.CheckForIllegalCrossThreadCalls = false;
             serialport1.DataReceived += new SerialDataReceivedEventHandler(sp1DataReceived);
 
             //串口设置默认选择项
@@ -367,11 +367,16 @@ namespace ColorCube
                 if(rdrcvStr.Checked == true)
                 {
                     //show for data in the form of string
-                    string rcvdata = serialport1.ReadExisting();
-                    ReceivedBox.Text += rcvdata + "\r\n";
+                    string rcvdata = "";
+                    for (char c; (c = (char)serialport1.ReadChar()) != '\0';)
+                    {
+                        rcvdata += c;
+                        if (c == '\n')
+                            rcvdata += "\r\n";
+                    }
+                    ReceivedBox.Text += rcvdata;
                     serialport1.DiscardInBuffer();  //clear buffer in ports controller
 
-                    speech = new SpeechSynthesizer();
                     Speak(rcvdata);
                 }
                 else
@@ -417,6 +422,7 @@ namespace ColorCube
             speech.Volume = 100; //设置音量
             speech.SpeakAsync(str);
         }
+
         private void btnClear_Click(object sender, EventArgs e)
         {
             ReceivedBox.Text = "";  //method to clear all the text
@@ -492,9 +498,8 @@ namespace ColorCube
         {
             if(serialport1.IsOpen)
             {
-                rdsentStr.Checked = true;
-                DataBox.Text = "Initialize";
-                btnSend.PerformClick();
+                byte[] initialize= new byte[1];
+                serialport1.Write(initialize, 0, 1);
 
                 HistoryBox.Text = null;
                 HistoryBox.AppendText("Starting Initializing, notice the Received Box for the finishing message."
